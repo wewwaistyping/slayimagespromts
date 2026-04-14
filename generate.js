@@ -443,7 +443,7 @@ const html = `<!DOCTYPE html>
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{font-family:var(--font-body);background:var(--bg);color:var(--fg);line-height:1.55;font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased}
+  body{font-family:var(--font-body);background:var(--bg);color:var(--fg);line-height:1.55;font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased;overflow-x:hidden}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(236,72,153,0.08),transparent 70%),radial-gradient(ellipse 60% 40% at 85% 20%,rgba(212,175,122,0.05),transparent 70%);pointer-events:none;z-index:0}
   body>*{position:relative;z-index:1}
   a{color:var(--pink);text-decoration:none;border-bottom:1px solid rgba(236,72,153,0.3);transition:all .2s}
@@ -497,11 +497,12 @@ const html = `<!DOCTYPE html>
   .step-body h3{font-size:1.1rem;font-family:var(--font-body);font-weight:700;color:var(--cream);margin-bottom:6px;letter-spacing:0}
   .step-body p{color:var(--fg-dim);font-size:0.9rem;line-height:1.6}
   .install-image{margin-top:28px;padding:20px;border:1px dashed var(--border-strong);border-radius:4px;text-align:center;background:rgba(0,0,0,0.25)}
-  .install-image img{max-width:100%;border-radius:2px;display:block;margin:0 auto}
+  .install-image img{max-width:100%;border-radius:2px;display:block;margin:0 auto;cursor:zoom-in;transition:opacity .15s}
+  .install-image img:hover{opacity:0.9}
   .install-image .placeholder{color:var(--fg-dimmer);font-family:var(--font-display);font-style:italic;font-size:0.9rem;padding:40px 20px}
 
   /* ── FILTER BAR ── */
-  .filter-bar{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;gap:12px;align-items:center;max-width:1200px;margin:0 auto}
+  .filter-bar{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;gap:12px;align-items:center;max-width:1100px;margin:0 auto}
   .filter-group{display:flex;gap:5px;flex:1;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
   .filter-group::-webkit-scrollbar{display:none}
   .search-wrap{position:relative;flex-shrink:0}
@@ -514,7 +515,7 @@ const html = `<!DOCTYPE html>
   .filter-btn.active{background:var(--pink);border-color:var(--pink);color:#0a0a0f}
 
   /* ── STYLE CARDS ── */
-  .styles-container{max-width:1200px;margin:0 auto;padding:36px 24px 40px;width:100%}
+  .styles-container{max-width:1100px;margin:0 auto;padding:36px 24px 40px;width:100%}
   .styles-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;width:100%}
   .styles-grid .style-card{display:none}
   .styles-grid .style-card.visible{display:flex;flex-direction:column;width:100%;min-width:0;max-width:100%}
@@ -580,7 +581,7 @@ const html = `<!DOCTYPE html>
   .no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--fg-dimmer);font-family:var(--font-display);font-style:italic;font-size:1.05rem}
 
   /* ── RANDOM SECTION ── */
-  .random-section{max-width:1200px;margin:20px auto 0;padding:40px 24px 80px;border-top:1px solid var(--border)}
+  .random-section{max-width:1100px;margin:20px auto 0;padding:40px 24px 80px;border-top:1px solid var(--border)}
   .random-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
   .random-label{display:flex;align-items:center;gap:10px}
   .random-label::before{content:'\u2726';color:var(--gold);font-size:1.1rem}
@@ -867,6 +868,14 @@ async function doCopy(text){if(navigator.clipboard&&window.isSecureContext){try{
 const allCards = Array.from(document.querySelectorAll('#stylesGrid .style-card'));
 allCards.forEach(initCard);
 
+// ═══ Guide image → lightbox ═══
+const guideImg = document.querySelector('.install-image img');
+if (guideImg) {
+  guideImg.addEventListener('click', function() {
+    openLightbox([guideImg.src], 0);
+  });
+}
+
 // ═══ App state ═══
 const PER_PAGE = 9;
 let currentPage = 0;
@@ -1028,17 +1037,15 @@ const lbNext = document.getElementById('lbNext');
 const lbCounter = document.getElementById('lbCounter');
 let lbList = [], lbIdx = 0;
 
-let _lbScrollY = 0;
 function openLightbox(images, startIdx){
   lbList = images; lbIdx = startIdx || 0;
-  _lbScrollY = window.scrollY || window.pageYOffset || 0;
   showLb(lbIdx);
+  // Desktop: compensate scrollbar width so content doesn't shift horizontally
+  const sbw = window.innerWidth - document.documentElement.clientWidth;
+  if (sbw > 0) document.body.style.paddingRight = sbw + 'px';
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
   lb.classList.add('open');
-  document.body.style.position = 'fixed';
-  document.body.style.top = '-' + _lbScrollY + 'px';
-  document.body.style.left = '0';
-  document.body.style.right = '0';
-  document.body.style.width = '100%';
 }
 function showLb(n){
   lbIdx = Math.max(0, Math.min(lbList.length - 1, n));
@@ -1049,14 +1056,17 @@ function showLb(n){
 }
 function closeLb(){
   lb.classList.remove('open');
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.width = '';
-  window.scrollTo(0, _lbScrollY);
+  document.body.style.paddingRight = '';
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
   lbImg.src = '';
 }
+// iOS: overflow:hidden doesn't block touch scrolling, so also preventDefault on touchmove
+document.addEventListener('touchmove', function(e){
+  if (lb.classList.contains('open')) {
+    if (!e.target.closest('.lb-btn, .lb-close, .lb-inner')) e.preventDefault();
+  }
+}, { passive: false });
 document.getElementById('lbClose').addEventListener('click', closeLb);
 lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
 lbPrev.addEventListener('click', () => showLb(lbIdx - 1));
