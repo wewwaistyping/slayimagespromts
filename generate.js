@@ -442,7 +442,7 @@ const html = `<!DOCTYPE html>
     --font-mono:'JetBrains Mono','Cascadia Code','Consolas',monospace;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;overflow-x:hidden}
   body{font-family:var(--font-body);background:var(--bg);color:var(--fg);line-height:1.55;font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased;overflow-x:hidden}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(236,72,153,0.08),transparent 70%),radial-gradient(ellipse 60% 40% at 85% 20%,rgba(212,175,122,0.05),transparent 70%);pointer-events:none;z-index:0}
   body>*{position:relative;z-index:1}
@@ -451,7 +451,9 @@ const html = `<!DOCTYPE html>
   h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-0.02em;line-height:1.05}
 
   /* ── HERO ── */
-  .hero{padding:60px 24px 40px;max-width:1100px;margin:0 auto;text-align:left}
+  .hero{padding:40px 24px 40px;max-width:1100px;margin:0 auto;text-align:left}
+  .hero-banner{margin:0 0 32px;border-radius:4px;overflow:hidden;border:1px solid var(--border);background:#0c0c12}
+  .hero-banner img{width:100%;height:auto;max-height:360px;object-fit:cover;display:block;cursor:zoom-in}
   .hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:60px}
   .brand-mark{font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase}
   .brand-mark::before{content:'★ ';color:var(--pink)}
@@ -496,13 +498,27 @@ const html = `<!DOCTYPE html>
   .step-body{flex:1;padding-top:8px}
   .step-body h3{font-size:1.1rem;font-family:var(--font-body);font-weight:700;color:var(--cream);margin-bottom:6px;letter-spacing:0}
   .step-body p{color:var(--fg-dim);font-size:0.9rem;line-height:1.6}
+
+  .install-card summary{list-style:none;cursor:pointer;display:block;outline:none;user-select:none;margin:0}
+  .install-card summary::-webkit-details-marker{display:none}
+  .install-card summary::marker{content:''}
+  .install-summary{position:relative;padding-right:50px}
+  .install-summary .intro-kicker{margin-bottom:10px}
+  .install-summary h2{margin-bottom:0;transition:margin-bottom .25s}
+  .install-card[open] .install-summary h2{margin-bottom:0}
+  .install-arrow{position:absolute;top:50%;right:0;transform:translateY(-40%);font-size:2rem;color:var(--gold);transition:transform .25s;line-height:1;display:inline-block}
+  .install-card[open] .install-arrow{transform:translateY(-60%) rotate(180deg)}
+  .install-content{animation:slideDown .3s ease}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
   .install-image{margin-top:28px;padding:20px;border:1px dashed var(--border-strong);border-radius:4px;text-align:center;background:rgba(0,0,0,0.25)}
   .install-image img{max-width:100%;border-radius:2px;display:block;margin:0 auto;cursor:zoom-in;transition:opacity .15s}
   .install-image img:hover{opacity:0.9}
   .install-image .placeholder{color:var(--fg-dimmer);font-family:var(--font-display);font-style:italic;font-size:0.9rem;padding:40px 20px}
 
   /* ── FILTER BAR ── */
-  .filter-bar{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;gap:12px;align-items:center;max-width:1100px;margin:0 auto}
+  .filter-bar{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 0;width:100%}
+  .filter-bar-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;gap:12px;align-items:center}
   .filter-group{display:flex;gap:5px;flex:1;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
   .filter-group::-webkit-scrollbar{display:none}
   .search-wrap{position:relative;flex-shrink:0}
@@ -651,6 +667,7 @@ const html = `<!DOCTYPE html>
 <body>
 
 <section class="hero">
+  <div class="hero-banner"><img src="images/shapka.jpg" alt="slay images banner" loading="eager"></div>
   <div class="hero-top">
     <span class="brand-mark">Wewwa &middot; ${styles.length} styles</span>
     <div class="lang-toggle">
@@ -691,9 +708,13 @@ const html = `<!DOCTYPE html>
     </div>
   </article>
 
-  <article class="install-card">
-    <div class="intro-kicker" data-ru="\u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430" data-en="installation">\u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430</div>
-    <h2 data-ru="\u041A\u0430\u043A \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C \u0432 \u0422\u0430\u0432\u0435\u0440\u043D\u0443?" data-en="How to install in SillyTavern?">\u041A\u0430\u043A \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C \u0432 \u0422\u0430\u0432\u0435\u0440\u043D\u0443?</h2>
+  <details class="install-card">
+    <summary class="install-summary">
+      <div class="intro-kicker" data-ru="\u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430" data-en="installation">\u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430</div>
+      <h2 data-ru="\u041A\u0430\u043A \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C \u0432 \u0422\u0430\u0432\u0435\u0440\u043D\u0443?" data-en="How to install in SillyTavern?">\u041A\u0430\u043A \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C \u0432 \u0422\u0430\u0432\u0435\u0440\u043D\u0443?</h2>
+      <span class="install-arrow">\u25BE</span>
+    </summary>
+    <div class="install-content">
     <div class="install-steps">
       <div class="install-step">
         <span class="step-num">I</span>
@@ -713,21 +734,25 @@ const html = `<!DOCTYPE html>
     <div class="install-image">
       <img src="images/guide.jpg" alt="install guide" loading="lazy">
     </div>
-  </article>
+    </div>
+  </details>
 </div>
 
 <nav class="filter-bar">
-  <button class="filter-btn active" data-filter="all" data-ru="\u0412\u0441\u0435" data-en="All">\u0412\u0441\u0435</button>
-  <button class="filter-btn" data-filter="painting" data-ru="\u0416\u0438\u0432\u043E\u043F\u0438\u0441\u044C" data-en="Painting">\u0416\u0438\u0432\u043E\u043F\u0438\u0441\u044C</button>
-  <button class="filter-btn" data-filter="illustration" data-ru="\u0418\u043B\u043B\u044E\u0441\u0442\u0440\u0430\u0446\u0438\u044F" data-en="Illustration">\u0418\u043B\u043B\u044E\u0441\u0442\u0440\u0430\u0446\u0438\u044F</button>
-  <button class="filter-btn" data-filter="film" data-ru="\u041A\u0438\u043D\u043E \u0438 \u0444\u043E\u0442\u043E" data-en="Film &amp; Photo">\u041A\u0438\u043D\u043E \u0438 \u0444\u043E\u0442\u043E</button>
-  <button class="filter-btn" data-filter="game" data-ru="\u0412\u0438\u0434\u0435\u043E\u0438\u0433\u0440\u044B" data-en="Video Games">\u0412\u0438\u0434\u0435\u043E\u0438\u0433\u0440\u044B</button>
-  <button class="filter-btn" data-filter="cartoon" data-ru="\u041C\u0443\u043B\u044C\u0442\u044B" data-en="Cartoons">\u041C\u0443\u043B\u044C\u0442\u044B</button>
-  <button class="filter-btn" data-filter="anime" data-ru="\u0410\u043D\u0438\u043C\u0435 \u0438 \u043C\u0430\u043D\u0433\u0430" data-en="Anime &amp; Manga">\u0410\u043D\u0438\u043C\u0435 \u0438 \u043C\u0430\u043D\u0433\u0430</button>
-  <button class="filter-btn" data-filter="print" data-ru="\u0413\u0440\u0430\u0444\u0438\u043A\u0430" data-en="Print &amp; Graphic">\u0413\u0440\u0430\u0444\u0438\u043A\u0430</button>
-  <button class="filter-btn" data-filter="3d" data-ru="3D \u0438 \u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F" data-en="3D &amp; Animation">3D \u0438 \u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F</button>
+  <div class="filter-bar-inner">
+    <div class="filter-group">
+    <button class="filter-btn active" data-filter="all" data-ru="\u0412\u0441\u0435" data-en="All">\u0412\u0441\u0435</button>
+    <button class="filter-btn" data-filter="painting" data-ru="\u0416\u0438\u0432\u043E\u043F\u0438\u0441\u044C" data-en="Painting">\u0416\u0438\u0432\u043E\u043F\u0438\u0441\u044C</button>
+    <button class="filter-btn" data-filter="illustration" data-ru="\u0418\u043B\u043B\u044E\u0441\u0442\u0440\u0430\u0446\u0438\u044F" data-en="Illustration">\u0418\u043B\u043B\u044E\u0441\u0442\u0440\u0430\u0446\u0438\u044F</button>
+    <button class="filter-btn" data-filter="film" data-ru="\u041A\u0438\u043D\u043E \u0438 \u0444\u043E\u0442\u043E" data-en="Film &amp; Photo">\u041A\u0438\u043D\u043E \u0438 \u0444\u043E\u0442\u043E</button>
+    <button class="filter-btn" data-filter="game" data-ru="\u0412\u0438\u0434\u0435\u043E\u0438\u0433\u0440\u044B" data-en="Video Games">\u0412\u0438\u0434\u0435\u043E\u0438\u0433\u0440\u044B</button>
+    <button class="filter-btn" data-filter="cartoon" data-ru="\u041C\u0443\u043B\u044C\u0442\u044B" data-en="Cartoons">\u041C\u0443\u043B\u044C\u0442\u044B</button>
+    <button class="filter-btn" data-filter="anime" data-ru="\u0410\u043D\u0438\u043C\u0435 \u0438 \u043C\u0430\u043D\u0433\u0430" data-en="Anime &amp; Manga">\u0410\u043D\u0438\u043C\u0435 \u0438 \u043C\u0430\u043D\u0433\u0430</button>
+    <button class="filter-btn" data-filter="print" data-ru="\u0413\u0440\u0430\u0444\u0438\u043A\u0430" data-en="Print &amp; Graphic">\u0413\u0440\u0430\u0444\u0438\u043A\u0430</button>
+    <button class="filter-btn" data-filter="3d" data-ru="3D \u0438 \u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F" data-en="3D &amp; Animation">3D \u0438 \u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F</button>
+    </div>
+    <div class="search-wrap"><input type="text" id="searchInput" placeholder="\u041F\u043E\u0438\u0441\u043A..." autocomplete="off"></div>
   </div>
-  <div class="search-wrap"><input type="text" id="searchInput" placeholder="\u041F\u043E\u0438\u0441\u043A..." autocomplete="off"></div>
 </nav>
 
 <main class="styles-container">
