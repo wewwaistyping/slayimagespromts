@@ -13659,7 +13659,7 @@ Miyazaki hand-drawn animation, clean simple outlines, soft natural proportions, 
       <span class="badge badge-tag" data-ru="Графика" data-en="Print & Graphic">Графика</span>
     </div>
   </header>
-  <div class="carousel-wrap" data-carousel><div class="carousel-track"><img src="images/hokusai%20short.jpg" alt="" loading="lazy"></div><button class="carousel-btn prev">&larr;</button><button class="carousel-btn next">&rarr;</button></div><div class="carousel-dots"></div>
+  <div class="carousel-wrap" data-carousel><div class="carousel-track"><img src="images/hokusai%20short.jpg" alt="" loading="lazy"><img src="images/hokusai.jpg" alt="" loading="lazy"></div><button class="carousel-btn prev">&larr;</button><button class="carousel-btn next">&rarr;</button></div><div class="carousel-dots"></div>
   <div class="prompt-block">
     <div class="prompt-tabs" role="tablist">
       <button class="prompt-tab active" data-tab="long"><span class="tab-label" data-ru="Длинный" data-en="Long">Длинный</span><span class="tab-tokens">~4080</span></button>
@@ -17487,7 +17487,13 @@ function initCarousel(wrap){
   const dotsEl = wrap.nextElementSibling && wrap.nextElementSibling.classList.contains('carousel-dots') ? wrap.nextElementSibling : null;
   if (items.length < 2) {
     wrap.querySelectorAll('.carousel-btn').forEach(b => b.style.display = 'none');
-    // still add counter label for 1-img case? no, skip.
+    // Still allow click-to-lightbox for single-image cards
+    wrap.addEventListener('click', function(e){
+      if (e.target.closest('.carousel-btn')) return;
+      const allImgs = [...wrap.querySelectorAll('.carousel-track img')].map(im => im.src);
+      if (allImgs.length === 0) return;
+      openLightbox(allImgs, 0);
+    });
     return { items, cur: () => 0 };
   }
   // counter
