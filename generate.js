@@ -212,7 +212,7 @@ const styles = [
   { name:'Hokusai (Ukiyo-e)', tag:'print', badge:'yellow', label:'Experimental', tagLabel:'Print & Graphic',
     desc:'Katsushika Hokusai woodblock print. Bold variable-weight ink outlines, flat colour fills with parallel hatching. Prussian blue dominant palette. Full vocabulary &mdash; not just waves. Figures, trees, birds, seasons, weather.',
     descRu:'Хокусай, укиё-э гравюра. Жирные контуры тушью, плоские заливки с параллельной штриховкой. Прусская синь доминирует. Полный словарь — не только волны.',
-    longFile:'slay_hokusai_long.txt', shortFile:'slay_hokusai_short.txt', images:['hokusai short.jpg'] },
+    longFile:'slay_hokusai_long.txt', shortFile:'slay_hokusai_short.txt', images:['hokusai short.jpg','hokusai.jpg'] },
   { name:'Japanese Watercolor (Sumi-e)', tag:'print', badge:'yellow', label:'Experimental', tagLabel:'Print & Graphic',
     desc:'Sumi-e ink + watercolour wash. Negative space as composition. Minimal suggestion &mdash; what is NOT painted matters as much as what is. Ink line + colour wash on rice paper texture.',
     descRu:'Суми-э тушь + акварельная размывка. Негативное пространство как композиция. Минимальное обозначение — то, что НЕ нарисовано, важно так же.',
@@ -809,7 +809,13 @@ function initCarousel(wrap){
   const dotsEl = wrap.nextElementSibling && wrap.nextElementSibling.classList.contains('carousel-dots') ? wrap.nextElementSibling : null;
   if (items.length < 2) {
     wrap.querySelectorAll('.carousel-btn').forEach(b => b.style.display = 'none');
-    // still add counter label for 1-img case? no, skip.
+    // Still allow click-to-lightbox for single-image cards
+    wrap.addEventListener('click', function(e){
+      if (e.target.closest('.carousel-btn')) return;
+      const allImgs = [...wrap.querySelectorAll('.carousel-track img')].map(im => im.src);
+      if (allImgs.length === 0) return;
+      openLightbox(allImgs, 0);
+    });
     return { items, cur: () => 0 };
   }
   // counter
