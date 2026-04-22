@@ -2,3 +2,21 @@
 *.log
 Thumbs.db
 .DS_Store
+
+# Source folders (originals before compression) — only the compressed *_N.jpg should ship
+images/400h/
+images/cinestill/
+images/cyberpunk 2077 gameplay raw/
+images/cyberpunk 2077 photomode/
+images/disposable/
+images/fallout 4 gameplay/
+images/fallout 4 photomode/
+images/gta sa/
+images/league splash/
+images/lomo/
+images/portra400/
+images/velvia 50/
+images/vtm/
+
+# Local builder scripts (not needed in repo)
+build_cards.py
