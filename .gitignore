@@ -20,3 +20,11 @@ images/vtm/
 
 # Local builder scripts (not needed in repo)
 build_cards.py
+# Local working files - never ship
+images/new/
+images/_*
+index_BACKUP_*.html
+preview_new*.html
+index_v2.html
+_source_old68.html
+_preview_server.js
